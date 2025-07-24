@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10-Year Career Planner - YDHT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    * { font-family:'Inter',sans-serif; }
+    :root{
+      --brand-primary-start:#1150ab;
+      --brand-primary-end:#0d3d85;
+      --brand-text:#1150ab;
+      --neutral-bg:#ffffff;
+      --neutral-card:#f9fafb;
+      --neutral-border:#e5e7eb;
+    }
+    .brand-primary{background:linear-gradient(135deg,var(--brand-primary-start)0%,var(--brand-primary-end)100%);}
+    .brand-text{color:var(--brand-text);}
+    .gradient-text{background:linear-gradient(135deg,var(--brand-primary-start),var(--brand-primary-end));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 3s ease infinite;}
+    @keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    .dashboard-card {
+      background: var(--neutral-card);
+      border: 1px solid var(--neutral-border);
+      transition: .3s all ease;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.1);
+    }
+    nav.glass-effect{
+      background:var(--neutral-bg);
+      backdrop-filter:none;
+      border-bottom:1px solid var(--neutral-border);
+      box-shadow:0 1px 3px rgba(0,0,0,.04);
+    }
+    .career-table th, .career-table td {
+      border: 2px solid var(--neutral-border);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .career-table th {
+      background: var(--neutral-card);
+      font-weight: 800;
+      color: #111827;
+    }
+    .career-table input[type="text"], .career-table input[type="number"] {
+      width: 100%;
+      min-width: 150px;
+      height: 50px;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--neutral-border);
+      border-radius: 0.75rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      background: #fff;
+      transition: all 0.3s ease;
+      line-height: 1.5;
+      box-sizing: border-box;
+    }
+    .career-table input:focus {
+      outline: none;
+      border-color: var(--brand-primary-start);
+      box-shadow: 0 0 0 3px rgba(17, 80, 171, 0.1);
+      transform: scale(1.02);
+    }
+    .career-table td {
+      min-width: 160px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <nav class="fixed top-0 w-full z-50 glass-effect">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex justify-between items-center">
+        <div class="text-2xl font-black gradient-text">YDHT</div>
+        <div class="flex items-center space-x-6">
+          <a href="/dashboard.html" class="text-gray-700 hover:text-black font-medium transition-all duration-300">Dashboard</a>
+          <a href="/10-year.html" class="text-gray-700 hover:text-black font-medium transition-all duration-300">10-Year Planner</a>
+          <button onclick="window.location.href='/'" class="text-gray-700 hover:text-black font-medium transition-all duration-300">Home</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <main class="pt-28 pb-16 min-h-screen">
+    <div class="max-w-[90rem] mx-auto px-4">
+      <div class="mb-10 text-center">
+        <h1 class="text-4xl md:text-5xl font-black mb-4 gradient-text">10-Year Career Planner</h1>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Map your career journey, track your income, and visualize your growth over the next decade. All calculations are automatic and editable below.</p>
+      </div>
+      <div class="dashboard-card rounded-2xl p-4 md:p-8 overflow-x-auto">
+        <div id="saveStatus" class="text-green-600 text-right pr-2 pb-2 text-sm font-semibold" style="display:none;">Saved!</div>
+        <table id="careerTable" class="career-table w-full text-base md:text-lg rounded-xl border-separate border-spacing-2">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Age</th>
+              <th>Monthly Income</th>
+              <th>Organisation</th>
+              <th>Salary Adjustment</th>
+              <th>Annual Income</th>
+              <th>Employee Benefit</th>
+              <th>Insurance</th>
+              <th>Extra Perk</th>
+              <th>Overall Value</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <script>
+    const years = [2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035];
+    let isPopulating = false;
+
+    async function fetchPlan() {
+      try {
+        const res = await fetch('/api/plan', { credentials: 'include' });
+        const data = await res.json();
+        if (data.success && data.plan && Array.isArray(data.plan.years)) {
+          populateTable(data.plan.years);
+        }
+      } catch (err) {
+        // Optionally handle error
+      }
+    }
+
+    function populateTable(planYears) {
+      isPopulating = true;
+      const rows = document.querySelectorAll('#tableBody tr');
+      years.forEach((year, i) => {
+        const entry = planYears.find(e => e.year === year);
+        if (entry) {
+          rows[i].querySelector('.age').value = entry.age ?? '';
+          rows[i].querySelector('.monthly').value = entry.monthly ?? '';
+          rows[i].querySelector('.org').value = entry.org ?? '';
+          rows[i].querySelector('.benefit').value = entry.benefit ?? '';
+          rows[i].querySelector('.insurance').value = entry.insurance ?? '';
+          rows[i].querySelector('.perk').value = entry.perk ?? '';
+        }
+      });
+      updateTable();
+      isPopulating = false;
+    }
+
+    async function savePlan() {
+      if (isPopulating) return;
+      const rows = document.querySelectorAll('#tableBody tr');
+      const plan = years.map((year, i) => ({
+        year,
+        age: rows[i].querySelector('.age').value || null,
+        monthly: rows[i].querySelector('.monthly').value || null,
+        org: rows[i].querySelector('.org').value || '',
+        benefit: rows[i].querySelector('.benefit').value || null,
+        insurance: rows[i].querySelector('.insurance').value || '',
+        perk: rows[i].querySelector('.perk').value || null
+      }));
+      try {
+        await fetch('/api/plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ years: plan })
+        });
+        showSaved();
+      } catch (err) {}
+    }
+
+    function showSaved() {
+      const el = document.getElementById('saveStatus');
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 1200);
+    }
+
+    function createTable() {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+      years.forEach(year => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="font-bold text-gray-800 text-xl">${year}</td>
+          <td><input type="number" class="age" placeholder="Age" /></td>
+          <td><input type="number" class="monthly" placeholder="Monthly" /></td>
+          <td><input type="text" class="org" placeholder="Company" /></td>
+          <td class="adjustment text-blue-700 font-mono font-bold">-</td>
+          <td class="annual text-green-700 font-mono font-bold">-</td>
+          <td><input type="number" class="benefit" placeholder="Benefit" /></td>
+          <td><input type="text" class="insurance" placeholder="Insurance" /></td>
+          <td><input type="number" class="perk" placeholder="Perk" /></td>
+          <td class="overall text-purple-700 font-mono font-bold">-</td>
+        `;
+        tbody.appendChild(row);
+      });
+      document.querySelectorAll("input").forEach(input => {
+        input.addEventListener("input", () => {
+          updateTable();
+          savePlan();
+        });
+      });
+      updateTable();
+    }
+
+    function updateTable() {
+      const rows = document.querySelectorAll("#tableBody tr");
+      let prevMonthly = null;
+      rows.forEach(row => {
+        const monthly = parseFloat(row.querySelector(".monthly").value) || 0;
+        const benefit = parseFloat(row.querySelector(".benefit").value) || 0;
+        const perk = parseFloat(row.querySelector(".perk").value) || 0;
+        const annual = monthly * 12;
+        row.querySelector(".annual").textContent = annual ? annual.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : "-";
+        let adj = "-";
+        if (prevMonthly !== null && prevMonthly !== 0) {
+          adj = ((monthly - prevMonthly) / prevMonthly * 100).toFixed(2) + "%";
+        }
+        row.querySelector(".adjustment").textContent = adj;
+        const overall = (annual + benefit + perk) / 12;
+        row.querySelector(".overall").textContent = (annual || benefit || perk) ? overall.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : "-";
+        prevMonthly = monthly;
+      });
+    }
+
+    createTable();
+    fetchPlan();
+  </script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - YDHT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family:'Inter',sans-serif; }
+
+        /* PayGap Malaysia inspired palette */
+        :root{
+            --brand-primary-start:#1150ab;
+            --brand-primary-end:#0d3d85;
+            --brand-text:#1150ab;
+            --neutral-bg:#ffffff;
+            --neutral-card:#f9fafb;
+            --neutral-border:#e5e7eb;
+        }
+
+        .brand-primary{background:linear-gradient(135deg,var(--brand-primary-start)0%,var(--brand-primary-end)100%);}
+        .brand-text{color:var(--brand-text);}
+        .gradient-text{background:linear-gradient(135deg,var(--brand-primary-start),var(--brand-primary-end));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 3s ease infinite;}
+        
+        .dashboard-card {
+            background: var(--neutral-card);
+            border: 1px solid var(--neutral-border);
+            transition: .3s all ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,.1);
+        }
+
+        @keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+        nav.glass-effect{
+            background:var(--neutral-bg);
+            backdrop-filter:none;
+            border-bottom:1px solid var(--neutral-border);
+            box-shadow:0 1px 3px rgba(0,0,0,.04);
+        }
+
+        .premium-button{
+            background:linear-gradient(135deg,var(--brand-primary-start)0%,var(--brand-primary-end)100%);
+            position:relative;
+            overflow:hidden;
+            transition:.3s all ease;
+        }
+        .premium-button:hover{
+            transform:translateY(-2px);
+            box-shadow:0 15px 35px rgba(17,80,171,.25);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-black gradient-text">YDHT</div>
+                <div class="flex items-center space-x-6">
+                    <span id="userWelcome" class="text-gray-700 font-medium"></span>
+                    <button onclick="logout()" class="text-gray-700 hover:text-black font-medium transition-all duration-300">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Welcome Section -->
+            <div class="mb-12">
+                <h1 class="text-4xl font-bold mb-4">Welcome to Your Dashboard</h1>
+                <p class="text-xl text-gray-600">Track your career progress and access exclusive resources.</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="dashboard-card rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Career Score</h3>
+                    <p class="text-3xl font-bold gradient-text">85%</p>
+                    <p class="text-sm text-gray-500 mt-2">Based on your profile completion</p>
+                </div>
+                <div class="dashboard-card rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Resources Accessed</h3>
+                    <p class="text-3xl font-bold gradient-text">12</p>
+                    <p class="text-sm text-gray-500 mt-2">In the last 30 days</p>
+                </div>
+                <div class="dashboard-card rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Network Growth</h3>
+                    <p class="text-3xl font-bold gradient-text">+25%</p>
+                    <p class="text-sm text-gray-500 mt-2">Month over month</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold mb-6">Quick Actions</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <button onclick="window.location.href='/10-year.html'" class="dashboard-card rounded-xl p-6 text-left">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">10-Year Career Plan</h3>
+                        <p class="text-sm text-gray-500">Map your next decade</p>
+                    </button>
+                    <button onclick="window.location.href='/retirement.html'" class="dashboard-card rounded-xl p-6 text-left">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Retirement Planning</h3>
+                        <p class="text-sm text-gray-500">Calculate your retirement fund</p>
+                    </button>
+                    <button class="dashboard-card rounded-xl p-6 text-left">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Update Profile</h3>
+                        <p class="text-sm text-gray-500">Keep your information current</p>
+                    </button>
+                    <button class="dashboard-card rounded-xl p-6 text-left">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Career Assessment</h3>
+                        <p class="text-sm text-gray-500">Take the latest assessment</p>
+                    </button>
+                    <button class="dashboard-card rounded-xl p-6 text-left">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Network</h3>
+                        <p class="text-sm text-gray-500">Connect with professionals</p>
+                    </button>
+                    <button class="dashboard-card rounded-xl p-6 text-left">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Resources</h3>
+                        <p class="text-sm text-gray-500">Access learning materials</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div>
+                <h2 class="text-2xl font-bold mb-6">Upcoming Events</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="dashboard-card rounded-xl p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-700">Career Workshop</h3>
+                                <p class="text-sm text-gray-500">March 15, 2024 • 2:00 PM</p>
+                            </div>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Virtual</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Learn essential skills for career advancement in tech.</p>
+                        <button class="premium-button px-4 py-2 text-white font-medium rounded-lg">Register Now</button>
+                    </div>
+                    <div class="dashboard-card rounded-xl p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-700">Networking Mixer</h3>
+                                <p class="text-sm text-gray-500">March 20, 2024 • 6:00 PM</p>
+                            </div>
+                            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">In Person</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Connect with industry leaders and peers.</p>
+                        <button class="premium-button px-4 py-2 text-white font-medium rounded-lg">RSVP Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Check if user is logged in
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/auth/check', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    window.location.href = '/';
+                    return;
+                }
+                
+                // Update welcome message
+                document.getElementById('userWelcome').textContent = `Welcome, ${data.user.name}!`;
+            } catch (err) {
+                console.error('Auth check failed:', err);
+                window.location.href = '/';
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                window.location.href = '/';
+            } catch (err) {
+                console.error('Logout failed:', err);
+            }
+        }
+
+        // Check auth on page load
+        checkAuth();
+
+        // Add click handlers for dashboard cards
+        document.querySelectorAll('.dashboard-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Add a subtle visual feedback instead of alert
+                const originalTransform = this.style.transform;
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = originalTransform;
+                }, 200);
+                
+                // Show coming soon message in the card
+                const message = this.querySelector('.coming-soon-message');
+                if (!message) {
+                    const msg = document.createElement('p');
+                    msg.className = 'coming-soon-message text-sm text-blue-600 mt-2';
+                    msg.textContent = 'Feature coming soon!';
+                    this.appendChild(msg);
+                    setTimeout(() => {
+                        msg.remove();
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
